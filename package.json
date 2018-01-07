@@ -1,22 +1,23 @@
 {
-  "name": "jjutils",
-  "version": "1.0.1",
-  "description": "John's JavaScript Utilities",
+  "name": "ella-utils",
+  "version": "1.0.2",
+  "description": "Utility functions and a tiny state manager",
   "main": "index.js",
   "scripts": {
     "test": "test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vandivier/jjutils.git"
+    "url": "git+https://github.com/Vandivier/ella-utils.git"
   },
   "keywords": [
-    "utilities"
+    "utilities",
+    "ella"
   ],
   "author": "John Vandivier",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Vandivier/jjutils/issues"
+    "url": "https://github.com/Vandivier/ella-utils/issues"
   },
-  "homepage": "https://github.com/Vandivier/jjutils#readme"
+  "homepage": "https://github.com/Vandivier/ella-utils#readme"
 }

@@ -1,3 +1,5 @@
-# jjutils
+# Ella Utils
 
-John's JavaScript Utilities. This is a collection of various utility methods.
+Utility functions and a tiny state manager.
+
+Utilized by the [Ella Framework](https://github.com/Vandivier/ella-framework).
