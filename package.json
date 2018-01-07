@@ -1,0 +1,22 @@
+{
+  "name": "jjutils",
+  "version": "1.0.0",
+  "description": "John's JavaScript Utilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vandivier/jjutils.git"
+  },
+  "keywords": [
+    "utilities"
+  ],
+  "author": "John Vandivier",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Vandivier/jjutils/issues"
+  },
+  "homepage": "https://github.com/Vandivier/jjutils#readme"
+}
