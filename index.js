@@ -11,7 +11,7 @@ const DELIMITER = '<<<***DEL***>>>';
 
 let _utils = {};
 
-let _utils.State = {};
+_utils.State = {};
 
 // turn in array into batches of iBatchSize
 // like _.chunk, ref: https://lodash.com/docs/4.17.4#chunk
