@@ -11,6 +11,8 @@ const DELIMITER = '<<<***DEL***>>>';
 
 let _utils = {};
 
+let _utils.State = {};
+
 // turn in array into batches of iBatchSize
 // like _.chunk, ref: https://lodash.com/docs/4.17.4#chunk
 _utils.chunk = function (arr, iBatchSize) {
@@ -344,6 +346,82 @@ _utils.fsRecordToCsvLine = function (oRecord, arrTableColumnKeys, wsWriteStream)
     sToCsv = sToCsv.slice(0, -1); // remove last trailing comma
     wsWriteStream && wsWriteStream.write(sToCsv + EOL);
     return sToCsv
+}
+
+_utils.fbOnServer = function() {
+    return (typeof window === 'undefined');
+}
+
+/**
+ * wraps _utils.getMatches()
+ * ensure a unique query result exists: find an object in arr with key === sUniqueKey and value === vUniqueValue
+ * if it exists, return that value, if it doesn't exist, make it
+ * finally, return the whole array by default or the new value if bReturnNewValue
+ * Note: bReturnNewValue is experimental and unexpected results may occur
+ * if attempting to mutate vNewValue by reference
+ * options.bReturnNewValue
+ * options.bExtend
+ */
+_utils.fvSureSet = function (arro, sUniqueKey, vUniqueValue, vNewValue, options) {
+    var arrMatch = _utils.getMatches(arro, sUniqueKey, vUniqueValue);
+
+    options = options || {}; // don't err if it isn't passed
+
+    if (arrMatch.length === 1) {
+        if (options.bExtend) {
+            arrMatch[0] = $.extend(arrMatch[0],
+                vNewValue,
+                arrMatch[0]);
+        } else {
+            arrMatch[0] = vNewValue;
+        }
+    } else if (arrMatch.length > 1) {
+        MI.get('log-error', {
+            'sErrorMessage': 'error in fvSureSet().',
+            'soException': 'Unique result expected but multiple results found.' +
+                ' Consider prior using a dedup method like fDedupeByNumericProperty'
+        });
+    } else { // arrMatch.length === 0
+        arro.push(vNewValue);
+    }
+
+    if (options.bReturnNewValue) {
+        return vNewValue;
+    }
+
+    return arro;
+}
+
+// for external use, see fvRemoveCircularReferences
+// ref: https://stackoverflow.com/a/31557814/3931488
+function _fRemoveCircularReferences(object, bStringify) {
+    var simpleObject = {};
+
+    for (var prop in object) {
+        if (!object.hasOwnProperty(prop)) {
+            continue;
+        }
+        if (typeof (object[prop]) == 'object') {
+            continue;
+        }
+        if (typeof (object[prop]) == 'function') {
+            continue;
+        }
+        simpleObject[prop] = object[prop];
+    }
+
+    return bStringify ? JSON.stringify(simpleObject) : simpleObject;
+}
+
+// decides whether input is an array or not and cleans appropriately
+_utils.fvRemoveCircularReferences = function (v, bStringify) {
+    if (Array.isArray(v)) {
+        return v.map(function (el) {
+            return _fRemoveCircularReferences(el, bStringify);
+        });
+    }
+
+    return _fRemoveCircularReferences(v, bStringify);
 }
 
 module.exports = _utils;
