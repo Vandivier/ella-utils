@@ -424,4 +424,8 @@ _utils.fvRemoveCircularReferences = function (v, bStringify) {
     return _fRemoveCircularReferences(v, bStringify);
 }
 
+_utils.isNumeric = function (n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 module.exports = _utils;
