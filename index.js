@@ -245,6 +245,12 @@ _utils.fsTrimMore = function (s) {
     return s && s.replace(/[,"]/g, '').trim();
 }
 
+// like String.trim()
+// but, handles existance check
+_utils.fsSafeTrim = function (s) {
+    return s && s.trim() || '';
+}
+
 // ref: https://derickbailey.com/2014/09/21/calculating-standard-deviation-with-array-map-and-array-reduce-in-javascript/
 _utils.standardDeviation = function (arri) {
     var avg = _utils.mean(arri);
