@@ -33,7 +33,7 @@ _utils.chunk = function (arr, iBatchSize) {
 //  class name for css or w/e
 //  only letters and dashes
 _utils.classify = function (sString) {
-    var sClassName = '';
+    var sClassName = ''; // TODO: can we remove sClassName and the for loop?
 
     for (var i = 0; i < sString.length; i++) {
         if (isNaN(sString[i])) sClassName += sString[i];
