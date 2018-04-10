@@ -6,6 +6,9 @@ const Bluebird = require('bluebird');
 const EOL = require('os').EOL;
 const fs = require('fs');
 const Promise = require('bluebird');
+const util = require('util');
+
+const fpWriteFile = util.promisify(fs.writeFile);
 
 const DELIMITER = '<<<***DEL***>>>';
 
@@ -432,6 +435,38 @@ _utils.fvRemoveCircularReferences = function (v, bStringify) {
 
 _utils.isNumeric = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+_utils.fsObjectToCSVLine = function (oRecord, arrsKeys) {
+  let sLine = '';
+
+  for (let i = 0; i < arrsKeys.length; i++) {
+    sLine += (oRecord[arrsKeys[i]] || '') + ',';
+  }
+
+  return sLine.slice(0, -1);
+}
+
+_utils.fpObjectsToCSV = async function (arro, options) {
+  const arrsKeys = options.arrsKeys
+    || options.oTitleLine
+        && Object.keys(options.oTitleLine).sort()
+    || Object.keys(arro[0]).sort();      // if not passed, get all of them in alphabetical order
+
+  let sCSV = '';
+
+  if (options.oTitleLine) arro = [options.oTitleLine].concat(arro);
+  if (options.sTitleLine) sCSV = sTitleLine;
+
+  for (let oRecord of arro) {
+    sCSV += _utils.fsObjectToCSVLine(oRecord, arrsKeys) + EOL;
+  }
+
+  if (options.sOutFileLocation) {
+    return fpWriteFile(options.sOutFileLocation, sCSV, 'utf8');
+  } else {
+      return Promise.resolve(sCSV);
+  }
 }
 
 module.exports = _utils;
