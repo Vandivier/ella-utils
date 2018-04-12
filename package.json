@@ -1,6 +1,6 @@
 {
   "name": "ella-utils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Utility functions and a tiny state manager",
   "main": "index.js",
   "scripts": {
