@@ -8,6 +8,7 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const util = require('util');
 
+const fpAppendFile = util.promisify(fs.appendFile);
 const fpWriteFile = util.promisify(fs.writeFile);
 
 const DELIMITER = '<<<***DEL***>>>';
@@ -455,15 +456,21 @@ _utils.fpObjectsToCSV = async function (arro, options) {
 
   let sCSV = '';
 
-  if (options.oTitleLine) arro = [options.oTitleLine].concat(arro);
-  if (options.sTitleLine) sCSV = sTitleLine;
+  if (!options.bAppend) {
+      if (options.oTitleLine) arro = [options.oTitleLine].concat(arro);
+      if (options.sTitleLine) sCSV = sTitleLine;
+  }
 
   for (let oRecord of arro) {
     sCSV += _utils.fsObjectToCSVLine(oRecord, arrsKeys) + EOL;
   }
 
   if (options.sOutFileLocation) {
-    return fpWriteFile(options.sOutFileLocation, sCSV, 'utf8');
+      if (options.bAppend) {
+          return fpAppendFile(options.sOutFileLocation, sCSV, 'utf8');
+      } else {
+          return fpWriteFile(options.sOutFileLocation, sCSV, 'utf8');
+      }
   } else {
       return Promise.resolve(sCSV);
   }
