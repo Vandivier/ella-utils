@@ -456,10 +456,8 @@ _utils.fpObjectsToCSV = async function (arro, options) {
 
   let sCSV = '';
 
-  if (!options.bAppend) {
-      if (options.oTitleLine) arro = [options.oTitleLine].concat(arro);
-      if (options.sTitleLine) sCSV = sTitleLine;
-  }
+  if (options.oTitleLine) arro = [options.oTitleLine].concat(arro);
+  if (options.sTitleLine) sCSV = sTitleLine;
 
   for (let oRecord of arro) {
     sCSV += _utils.fsObjectToCSVLine(oRecord, arrsKeys) + EOL;
@@ -474,6 +472,10 @@ _utils.fpObjectsToCSV = async function (arro, options) {
   } else {
       return Promise.resolve(sCSV);
   }
+}
+
+_utils.compare = function (a, b, isAscending) {
+    return (a < b ? -1 : 1) * (isAscending ? 1 : -1);
 }
 
 module.exports = _utils;
