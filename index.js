@@ -4,16 +4,33 @@
 
 const Bluebird = require('bluebird');
 const EOL = require('os').EOL;
-const fs = require('fs');
 const Promise = require('bluebird');
+
+const fs = require('fs');
 const util = require('util');
 
-const fpAppendFile = util.promisify(fs.appendFile);
-const fpWriteFile = util.promisify(fs.writeFile);
+let fpAppendFile;
+let fpWriteFile;
 
 const DELIMITER = '<<<***DEL***>>>';
 
 let _utils = {};
+
+main();
+
+function main() {
+    // ref: https://stackoverflow.com/questions/17575790/environment-detection-node-js-or-browser
+    _utils.isNode = new Function(`
+        try {return this===window;}catch(e){ return false;}
+    `);
+
+    if (_utils.isNode()) {
+        let fpAppendFile = util.promisify(fs.appendFile);
+        let fpWriteFile = util.promisify(fs.writeFile);
+    } else {
+        // window.ELLA = _utils; // TODO: enable via env var
+    }
+}
 
 _utils.State = {};
 
