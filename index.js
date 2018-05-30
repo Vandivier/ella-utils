@@ -77,6 +77,54 @@ _utils.ensure = function (sProperty, oOptions) {
     oWorking[arrsDescendents[i]] = oOptions.vValue;
 }
 
+// alias for sMakeDirByPathSync()
+_utils.ensureFolder = function (targetDir, {isRelativeToScript = false} = {}) {
+    _utils.sMakeDirByPathSync(targetDir, isRelativeToScript);
+}
+
+// ensure a file exists
+// also recursively ensure folders
+_utils.ensureFile = function (sLocation, {isRelativeToScript = false} = {}) {
+    let arrsDir = sLocation.split('/');
+    let sDir = '';
+
+    if (fs.existsSync(sLocation)) return;
+
+    if (arrsDir.length > 1) {
+        sDir = arrsDir
+            .slice(0, -1)
+            .join('/');
+
+        _utils.ensureFolder(sDir, isRelativeToScript);
+    }
+
+    fs.closeSync(fs.openSync(filepath, 'w')); // create empty file
+}
+
+// ref: https://stackoverflow.com/questions/31645738/how-to-create-full-path-with-nodes-fs-mkdirsync
+// ensure that a file system path exists by creating folders recursively as needed
+_utils.sMakeDirByPathSync = function(targetDir, {isRelativeToScript = false} = {}) {
+  const sep = path.sep;
+  const initDir = path.isAbsolute(targetDir) ? sep : '';
+  const baseDir = isRelativeToScript ? __dirname : '.';
+
+  return targetDir.split(sep).reduce((parentDir, childDir) => {
+    const curDir = path.resolve(baseDir, parentDir, childDir);
+    try {
+      fs.mkdirSync(curDir);
+      console.log(`Directory ${curDir} created!`);
+    } catch (err) {
+      if (err.code !== 'EEXIST') {
+        throw err;
+      }
+
+      console.log(`Directory ${curDir} already exists!`);
+    }
+
+    return curDir;
+  }, initDir);
+}
+
 //  TODO: desc
 //  f can optionally return a promise...I think ?
 _utils.executeAfterKSeconds = function (k, x, f) {
