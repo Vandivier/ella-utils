@@ -2,9 +2,7 @@
 // TODO: give each function a depends on identifier and allow tree shaking
 'use strict';
 
-const Bluebird = require('bluebird');
 const EOL = require('os').EOL;
-const Promise = require('bluebird');
 
 const fs = require('fs');
 const util = require('util');
@@ -176,47 +174,6 @@ _utils.forEachReverseAsyncParallel = async function (arr, fp) {
     }
 
     return await Promise.all(arrp);
-}
-
-//  based on http://bluebirdjs.com/docs/api/reflect.html
-//  applies fp returning a Promise to each item in array arrp, where items are also promises
-//  assumes fp takes only a single param, which is the item from array, eg defined as `function fp(_p) { /* do stuff */}` || _p === arrp[i]
-//  be sure you attach a .catch() to fp. Or maybe I should implement a default catch
-//  TODO: optionally overwrite .each()
-_utils.settleAll = async function (arrp, fp) {
-    let arrSettled;
-
-    // fp mutates the promise result
-    // if not provided, just return the unmutated promise
-    fp = fp || function(p){
-        return p;
-    };
-
-    let arrInspections = await Promise.all(
-        arrp.map(function (_p) {
-            return Bluebird.resolve(fp(_p)).reflect(); // ensure fp(_p) is a Bluebird in order to .reflect();
-        })
-    );
-
-    arrSettled = arrInspections.map(function (inspection) {
-        let _err;
-
-        try {
-            if (inspection.isFulfilled()) return inspection.value()
-            return inspection.reason();
-        } catch (e) {
-            _err = e;
-        }
-
-        return {
-            'error': {
-                'message': 'unexpected result: promise neither fulfilled nor rejected',
-                'data': (_err || null)
-            }
-        };
-    });
-
-    return arrSettled; // return here not above to ensure .each() ran
 }
 
 //  _utils.forEachReverse as async function
